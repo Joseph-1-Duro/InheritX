@@ -15,9 +15,10 @@ pub enum Error {
     Unauthorized = 3,
     InactivityPeriodNotMet = 4,
     InvalidBasisPoints = 5,
-    NegativeAmount = 6,
-    InsufficientBalance = 7,
-    TooManyBeneficiaries = 8,
+    InvalidAllocationShares = 6,
+    NegativeAmount = 7,
+    InsufficientBalance = 8,
+    TooManyBeneficiaries = 9,
 }
 
 #[contracttype]
@@ -107,10 +108,13 @@ impl InheritanceContract {
 
         let mut total_bps: u32 = 0;
         for beneficiary in beneficiaries.iter() {
+            if beneficiary.allocation_bps == 0 {
+                return Err(Error::InvalidAllocationShares);
+            }
             total_bps += beneficiary.allocation_bps;
         }
         if total_bps != 10000 {
-            return Err(Error::InvalidBasisPoints);
+            return Err(Error::InvalidAllocationShares);
         }
 
         let token_client = soroban_sdk::token::Client::new(&env, &token);
