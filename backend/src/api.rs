@@ -322,7 +322,9 @@ async fn create_plan(
     if total_bps != 10000 {
         return (
             StatusCode::BAD_REQUEST,
-            Json(serde_json::json!({ "error": "Total allocation_bps must be exactly 10000 (100%)" })),
+            Json(
+                serde_json::json!({ "error": "Total allocation_bps must be exactly 10000 (100%)" }),
+            ),
         )
             .into_response();
     }
